@@ -3,8 +3,9 @@ import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import Link from "next/link";
 
 import { getServerSession } from "next-auth"
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+// import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { Video } from "@prisma/client";
+import { authOptions } from "@/app/api/auth/[...nextauth]/auth";
 
 
 

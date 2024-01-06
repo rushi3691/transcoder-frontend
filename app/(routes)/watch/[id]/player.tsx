@@ -19,6 +19,11 @@ import {
 
 import { Video } from '@prisma/client';
 
+import '@vidstack/react/player/styles/default/layouts/video.css';
+import '@vidstack/react/player/styles/default/theme.css';
+
+
+
 const cloudfrontUrl = 'https://d3tc1biq9ly8l.cloudfront.net/processed/';
 
 export default function Player({ video }: { video: Video }) {

@@ -1,10 +1,11 @@
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
-import { authOptions } from "../auth/[...nextauth]/route";
+// import { authOptions } from "../auth/[...nextauth]/route";
 import { StatusUpdateRequestSchema } from "@/validators/StatusUpdateValidator";
 import { prisma } from "@/prisma/db";
 import { z } from "zod";
 import { PrismaClientUnknownRequestError } from "@prisma/client/runtime/library";
+import { authOptions } from "../auth/[...nextauth]/auth";
 
 export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions);

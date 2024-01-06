@@ -1,6 +1,6 @@
 
 
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+// import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import VideoSearchCard from "@/components/custom-components/videosearch-card";
 import { prisma } from "@/prisma/db";
 import { getServerSession } from "next-auth";
@@ -15,6 +15,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import Link from "next/link";
+import { authOptions } from "@/app/api/auth/[...nextauth]/auth";
 
 
 type VideoData = {

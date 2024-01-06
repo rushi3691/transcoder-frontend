@@ -4,13 +4,14 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
-import { authOptions } from "../auth/[...nextauth]/route";
+// import { authOptions } from "../auth/[...nextauth]/route";
 import { prisma } from "@/prisma/db";
 import {
   IUploadUrlOutput,
   UploadUrlRequestSchema,
 } from "@/validators/UploadValidator";
 import { getToken } from "next-auth/jwt";
+import { authOptions } from "../auth/[...nextauth]/auth";
 
 // prisma schema
 // model User {
@@ -95,4 +96,4 @@ const getSignedFileUrl = async ({ fileName, bucket }: GetSignedFileUrlArgs) => {
   return url;
 };
 
-export default getSignedFileUrl;
+// export default getSignedFileUrl;
