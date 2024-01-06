@@ -34,7 +34,7 @@ type VideoData = {
 
 export default async function MyVideos() {
 
-    const data = await getVideos();
+    const data = await getVideos() || [];
 
 
     // sort data by status such that the videos that are ready are at the top
@@ -56,7 +56,7 @@ export default async function MyVideos() {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {data?.map((video) => (
+                    {data.map((video) => (
                         <TableRow key={video.id}>
                             <TableCell className="font-medium">{video.title}</TableCell>
                             <TableCell>{getDescription(video.description!)}</TableCell>
