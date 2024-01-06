@@ -1,5 +1,6 @@
 "use client"
 import { useRef, useState } from 'react';
+
 import "./player.module.css"
 import {
     isHLSProvider,
@@ -19,8 +20,6 @@ import {
 
 import { Video } from '@prisma/client';
 
-import '@vidstack/react/player/styles/default/layouts/video.css';
-import '@vidstack/react/player/styles/default/theme.css';
 
 
 

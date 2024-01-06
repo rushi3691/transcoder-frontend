@@ -3,6 +3,8 @@
 // import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import '../globals.css'
+import '@vidstack/react/player/styles/default/theme.css';
+import '@vidstack/react/player/styles/default/layouts/video.css';
 import Sidebar from '@/components/custom-components/sidebar'
 import { cn } from '@/lib/utils'
 import Navbar from '@/components/custom-components/navbar'
