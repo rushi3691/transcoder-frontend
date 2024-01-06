@@ -1,7 +1,6 @@
 
 
 // import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import VideoSearchCard from "@/components/custom-components/videosearch-card";
 import { prisma } from "@/prisma/db";
 import { getServerSession } from "next-auth";
 
@@ -16,6 +15,7 @@ import {
 } from "@/components/ui/table"
 import Link from "next/link";
 import { authOptions } from "@/app/api/auth/[...nextauth]/auth";
+import { Video } from "@prisma/client";
 
 
 type VideoData = {
@@ -34,7 +34,7 @@ type VideoData = {
 
 export default async function MyVideos() {
 
-    const data = await getVideos() || [];
+    const data = await getVideos() || [] as Video[];
 
 
     // sort data by status such that the videos that are ready are at the top
@@ -69,7 +69,7 @@ export default async function MyVideos() {
                             <TableCell className="text-right">{video.createdAt.toString()}</TableCell>
                         </TableRow>
                     ))}
-                    {data?.map((video) => (
+                    {data.map((video) => (
                         <TableRow key={video.id}>
                             <TableCell className="font-medium">{video.title}</TableCell>
                             <TableCell>{getDescription(video.description!)}</TableCell>
