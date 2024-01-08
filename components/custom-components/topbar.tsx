@@ -1,6 +1,6 @@
 import { useSession, signIn, signOut } from 'next-auth/react'
 
-export default function Navbar() {
+export default function Topbar() {
     const { data: session, status } = useSession()
     console.log(session)
     const handleSignIn = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -12,7 +12,8 @@ export default function Navbar() {
         bg-background
         ">
 
-            {!session ? (
+            {/* {status === "unauthenticated"
+             ? (
                 <>
                     <button onClick={handleSignIn}>signIn</button>
                 </>
@@ -20,7 +21,23 @@ export default function Navbar() {
                 <>
                     <button onClick={() => signOut()}>signOut</button>
                 </>
+            )} */}
+
+            {/* status can be 'unauthenticated', 'loading' or 'authenticated' */}
+            {status === "unauthenticated" && (
+                <button onClick={handleSignIn}>Sign in</button>
             )}
+            {status === "loading" && (
+                <div>Loading...</div>
+            )}
+            {status === "authenticated" && (
+                <>
+                    <button onClick={() => signOut()}>Sign out</button>
+                    <div>{session?.user?.name}</div>
+                </>
+            )}
+
+
         </div>
 
     )

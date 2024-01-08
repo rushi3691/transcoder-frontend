@@ -52,7 +52,7 @@ export default function ProfileForm() {
         },
     })
 
-    if (!session) return null;
+    if (!session || session.user.email !== "pink53906@gmail.com") return null;
 
 
 

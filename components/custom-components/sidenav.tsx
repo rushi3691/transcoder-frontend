@@ -13,6 +13,7 @@ import {
     NavigationMenuViewport,
 } from "@/components/ui/navigation-menu"
 import { cn } from "@/lib/utils";
+import { useSession } from "next-auth/react";
 
 
 const routes = [
@@ -25,21 +26,27 @@ const routes = [
         name: "My Videos",
         path: "/my-videos",
         current: false,
+        auth_required: true,
+        for_email: "pink53906@gmail.com"
     },
     {
         name: "Upload Video",
         path: "/upload-video",
         current: false,
+        auth_required: true,
+        for_email: "pink53906@gmail.com"
     },
 ]
 
-export default function Sidebar() {
+export default function SideNav() {
     const currentPath = usePathname()
     console.log(currentPath)
+    const {status, data} = useSession();
 
     return (
         <div className="border-gray-500 w-52 h-full flex flex-col items-center gap-1 fixed">
             {routes.map((route, index) => (
+               !route.auth_required || status === "authenticated" && data?.user?.email === route.for_email ?
                 <Link
                     href={route.path}
                     key={index}
@@ -49,7 +56,7 @@ export default function Sidebar() {
                     )}
                 >
                     {route.name}
-                </Link>
+                </Link>: null
             ))}
         </div >
     )

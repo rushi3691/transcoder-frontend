@@ -34,7 +34,7 @@ type VideoData = {
 
 export default async function MyVideos() {
 
-    const data = await getVideos() || [] as Video[];
+    const data = await getVideos();
 
 
     // sort data by status such that the videos that are ready are at the top
@@ -42,7 +42,6 @@ export default async function MyVideos() {
     return (
         // <div className="w-full flex flex-col items-center gap-5 p-5 pb-10 h-full overflow-y-scroll custom-scrollbar">
         <div className="ml-56 w-full">
-
             <Table>
                 <TableCaption>A list of your vidoes.</TableCaption>
                 <TableHeader>
@@ -56,19 +55,6 @@ export default async function MyVideos() {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {data.map((video) => (
-                        <TableRow key={video.id}>
-                            <TableCell className="font-medium">{video.title}</TableCell>
-                            <TableCell>{getDescription(video.description!)}</TableCell>
-                            <TableCell className="text-center">{video.status}</TableCell>
-                            <TableHead className="text-center">
-                                {video.status === "READY" ? (
-                                    <Link href={`/watch/${video.id}`}>{`/watch/${video.id}`}</Link>
-                                ) : null}
-                            </TableHead>
-                            <TableCell className="text-right">{video.createdAt.toString()}</TableCell>
-                        </TableRow>
-                    ))}
                     {data.map((video) => (
                         <TableRow key={video.id}>
                             <TableCell className="font-medium">{video.title}</TableCell>
@@ -116,8 +102,8 @@ function getDescription(description: string) {
 async function getVideos() {
     const session = await getServerSession(authOptions);
 
-    if (!session) {
-        return null;
+    if (!session || session.user.email !== "pink53906@gmail.com") {
+        return [];
     }
     const data = await prisma.video.findMany({
         where: {

@@ -5,10 +5,10 @@ import { Inter } from 'next/font/google'
 import '../globals.css'
 import '@vidstack/react/player/styles/default/theme.css';
 import '@vidstack/react/player/styles/default/layouts/video.css';
-import Sidebar from '@/components/custom-components/sidebar'
 import { cn } from '@/lib/utils'
-import Navbar from '@/components/custom-components/navbar'
 import { SessionProvider } from "next-auth/react"
+import Topbar from '@/components/custom-components/topbar';
+import SideNav from '@/components/custom-components/sidenav';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -30,9 +30,9 @@ export default function RootLayout({
         "custom-scrollbar"
       )}>
         <SessionProvider>
-          <Navbar />
+          <Topbar />
           <div className='flex h-full'>
-            <Sidebar />
+            <SideNav />
             {children}
           </div>
         </SessionProvider>
