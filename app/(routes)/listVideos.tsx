@@ -10,9 +10,7 @@ const cloudfrontUrl = 'https://d3tc1biq9ly8l.cloudfront.net/processed/';
 export default async function ListVideos() {
 
     const videos = await getVideos();
-    // wait for 5 seconds
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-
+    
     return (
         // handle overflow in y axis
         <>
