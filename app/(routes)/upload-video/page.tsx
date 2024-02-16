@@ -32,8 +32,8 @@ const formSchema = z.object({
     }).optional(),
     video_file: typeof FileList !== 'undefined' ? z.instanceof(FileList, {
         message: "video file must be present"
-    }).refine(fileList => fileList.length > 0 && fileList[0].size <= 10 * 1024 * 1024, {
-        message: "video file must be less than or equal to 10MB",
+    }).refine(fileList => fileList.length > 0 && fileList[0].size <= 50 * 1024 * 1024, {
+        message: "video file must be less than or equal to 50MB",
     }) : z.any()
 })
 
