@@ -8,9 +8,7 @@ export default function Topbar() {
         signIn('google');
     }
     return (
-        <div className="h-16 w-full sticky top-0 z-50 flex justify-end items-center px-4 gap-4 shadow-md
-        bg-background
-        ">
+        <div className="h-16 w-full sticky top-0 z-50 flex justify-end items-center px-4 gap-4 bg-background">
 
             {/* {status === "unauthenticated"
              ? (

@@ -13,7 +13,7 @@ export default async function ListVideos() {
     return (
         <>
             {videos.map((video) => (
-                <div key={video.id} className="rounded shadow-lg">
+                <div key={video.id} className="rounded">
                     <Link href={`/watch/${video.id}`}>
                         <div className='h-full w-full'>
                             <Image
