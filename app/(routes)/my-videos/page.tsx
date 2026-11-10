@@ -16,9 +16,10 @@ import {
 } from "@/components/ui/table"
 import { authOptions } from "@/app/api/auth/[...nextauth]/auth";
 import { MEDIA_URL } from "@/lib/media";
-import { cn } from "@/lib/utils";
+import { cn, formatDuration } from "@/lib/utils";
 import { canUpload } from "@/lib/access";
 import { Skeleton } from "@/components/ui/skeleton";
+import EditVideo from "./edit-video";
 
 const STATUS_STYLES: Record<string, string> = {
     READY: "bg-green-500/15 text-green-400",
@@ -38,6 +39,7 @@ export default function MyVideos() {
                         <TableHead>Video</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead className="text-right">Date</TableHead>
+                        <TableHead className="w-12"><span className="sr-only">Actions</span></TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -66,6 +68,7 @@ function RowsSkeleton() {
                     </TableCell>
                     <TableCell><Skeleton className="h-6 w-16 rounded-full" /></TableCell>
                     <TableCell><Skeleton className="ml-auto h-4 w-24" /></TableCell>
+                    <TableCell><Skeleton className="h-9 w-9 rounded-full" /></TableCell>
                 </TableRow>
             ))}
         </>
@@ -78,7 +81,7 @@ async function VideoRows() {
     if (data.length === 0) {
         return (
             <TableRow>
-                <TableCell colSpan={3} className="py-20 text-center text-muted-foreground">
+                <TableCell colSpan={4} className="py-20 text-center text-muted-foreground">
                     You haven&apos;t uploaded any videos yet.
                 </TableCell>
             </TableRow>
@@ -105,6 +108,11 @@ async function VideoRows() {
                                     ) : (
                                         <Film className="h-6 w-6 text-muted-foreground" />
                                     )}
+                                    {video.duration != null && (
+                                        <span className="absolute bottom-1 right-1 rounded bg-black/80 px-1 text-[10px] font-medium text-white">
+                                            {formatDuration(video.duration)}
+                                        </span>
+                                    )}
                                 </div>
                                 <div className="min-w-0">
                                     {ready ? (
@@ -128,6 +136,9 @@ async function VideoRows() {
                         <TableCell className="whitespace-nowrap text-right text-sm">
                             {video.createdAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                             <p className="text-xs text-muted-foreground">Uploaded</p>
+                        </TableCell>
+                        <TableCell>
+                            <EditVideo video={{ id: video.id, title: video.title, description: video.description }} />
                         </TableCell>
                     </TableRow>
                 );

@@ -70,6 +70,7 @@ model Video {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   deletedAt   DateTime?
+  duration    Float? // seconds, set by the transcoder
   user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String      @db.ObjectId
   // tags        Tag[]

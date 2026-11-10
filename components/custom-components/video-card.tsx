@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Video } from "@prisma/client";
 import { MEDIA_URL } from "@/lib/media";
-import { timeAgo } from "@/lib/utils";
+import { formatDuration, timeAgo } from "@/lib/utils";
 import Avatar from "./avatar";
 
 export type VideoWithUser = Video & { user: { name: string | null; image: string | null } };
@@ -19,6 +19,11 @@ export default function VideoCard({ video }: { video: VideoWithUser }) {
                     sizes="(min-width: 1536px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                     className="object-cover"
                 />
+                {video.duration != null && (
+                    <span className="absolute bottom-1.5 right-1.5 rounded bg-black/80 px-1 py-px text-xs font-medium text-white">
+                        {formatDuration(video.duration)}
+                    </span>
+                )}
             </div>
             <div className="flex gap-3 pr-6">
                 <Avatar name={video.user.name} image={video.user.image} />
