@@ -1,52 +1,35 @@
 import { prisma } from '@/prisma/db';
-import Image from 'next/image';
-import Link from 'next/link';
-
-
-import { MEDIA_URL } from '@/lib/media';
+import VideoCard from '@/components/custom-components/video-card';
 
 
 export default async function ListVideos() {
 
     const videos = await getVideos();
 
+    if (videos.length === 0) {
+        return <p className="col-span-full py-20 text-center text-muted-foreground">No videos yet.</p>;
+    }
+
     return (
         <>
             {videos.map((video) => (
-                <div key={video.id} className="rounded">
-                    <Link href={`/watch/${video.id}`}>
-                        <div className='h-full w-full'>
-                            <Image
-                                src={MEDIA_URL + `${video.id}/thumb_1080p.jpg`}
-                                width={360} height={200}
-                                alt={video.title || 'Loading...'}
-                                className="rounded-2xl w-full"
-                            />
-                            <div className="px-1 py-4">
-                                <div className="font-bold text-xl mb-2">{video.title}</div>
-                                <p className="text-gray-400 text-sm text-wrap">{video.description?.substring(0, 100)}...</p>
-                                <p className="text-gray-400 text-sm ">{video.createdAt.toLocaleDateString()}</p>
-                            </div>
-                        </div>
-                    </Link>
-                </div>
-            ))
-            }
+                <VideoCard key={video.id} video={video} />
+            ))}
         </>
     );
 }
 
 
 async function getVideos() {
-    // const session = await getServerSession(authOptions);
-
     const data = await prisma.video.findMany({
         where: {
             status: "READY"
         },
+        include: {
+            user: { select: { name: true, image: true } },
+        },
         orderBy: [
             { createdAt: 'desc' },
-            // { status: 'desc' },
         ],
         take: 10,
     })

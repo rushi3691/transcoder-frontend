@@ -20,6 +20,8 @@ import axios from "axios"
 import { Progress } from "@/components/ui/progress"
 import { IUploadUrlInput, IUploadUrlOutput } from "@/validators/UploadValidator"
 import { Textarea } from "@/components/ui/textarea"
+import { UploadCloud } from "lucide-react"
+import { canUpload } from "@/lib/access"
 
 const formSchema = z.object({
     title: z.string().min(2, {
@@ -52,7 +54,7 @@ export default function ProfileForm() {
         },
     })
 
-    if (!session || session.user.email !== "pink53906@gmail.com") return null;
+    if (!session || !canUpload(session.user.email)) return null;
 
 
 
@@ -134,9 +136,14 @@ export default function ProfileForm() {
         }
     }
     return (
-        <div className="ml-52 mt-16 w-full h-3/4 flex items-center justify-center">
+        <div className="flex justify-center px-4 py-10 sm:px-6">
+            <div className="w-full max-w-xl rounded-2xl border bg-card p-6 shadow-lg sm:p-8">
+            <div className="mb-8 flex items-center gap-3">
+                <UploadCloud className="h-7 w-7 text-muted-foreground" />
+                <h1 className="text-xl font-semibold">Upload video</h1>
+            </div>
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-[30%]">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     <FormField
                         control={form.control}
                         name="title"
@@ -189,6 +196,7 @@ export default function ProfileForm() {
                                         name={name}
                                         ref={ref}
                                         disabled={uploading}
+                                        className="block w-full cursor-pointer rounded-lg border border-dashed border-border p-4 text-sm text-muted-foreground file:mr-4 file:cursor-pointer file:rounded-full file:border-0 file:bg-primary file:px-4 file:py-2 file:text-sm file:font-medium file:text-primary-foreground hover:file:bg-primary/90 disabled:cursor-not-allowed"
                                     />
                                 </FormControl>
                                 <FormDescription>
@@ -202,17 +210,18 @@ export default function ProfileForm() {
                     <div className="flex gap-6 items-center">
                         {uploading ?
                             <div className="flex gap-4 items-center w-full">
-                                <Button onClick={cancelUpload} variant="destructive" type="button">
+                                <Button onClick={cancelUpload} variant="destructive" type="button" className="rounded-full">
                                     Cancel
                                 </Button>
                                 <Progress value={progress} />
                             </div>
                             :
-                            <Button type="submit" disabled={uploading}>Upload</Button>
+                            <Button type="submit" disabled={uploading} className="rounded-full px-6">Upload</Button>
                         }
                     </div>
                 </form>
             </Form>
+            </div>
         </div>
     )
 }

@@ -1,29 +1,26 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ListSuspense() {
-    const n = 9; // replace 5 with the number of times you want to render the div
     return (
         <>
-            {
-                Array.from({ length: n }).map((_, index) => (
-                    <div key={index} className="w-full">
-                        <Loadingcard />
-                    </div>
-                ))
-            }
+            {Array.from({ length: 8 }).map((_, index) => (
+                <Loadingcard key={index} />
+            ))}
         </>
     )
 }
 
+// mirrors VideoCard: 16:9 thumbnail, avatar, two text lines
 function Loadingcard() {
     return (
-        <div>
-
-            <Skeleton className="w-full h-[200px] rounded-xl" />
-            <div className="px-1 py-4">
-                <Skeleton className="font-bold text-xl mb-2 h-[20px] w-1/2" />
-                <Skeleton className="text-gray-400 text-sm text-wrap h-[20px]" />
-                {/* <p className="text-gray-400 text-sm ">{video.createdAt.toLocaleDateString()}</p> */}
+        <div className="flex flex-col gap-3">
+            <Skeleton className="aspect-video w-full rounded-xl" />
+            <div className="flex gap-3">
+                <Skeleton className="h-9 w-9 shrink-0 rounded-full" />
+                <div className="flex w-full flex-col gap-2">
+                    <Skeleton className="h-4 w-11/12" />
+                    <Skeleton className="h-4 w-1/2" />
+                </div>
             </div>
         </div>
     )

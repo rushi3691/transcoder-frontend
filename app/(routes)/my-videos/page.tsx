@@ -1,108 +1,148 @@
-
-
-// import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { Suspense } from "react";
 import { prisma } from "@/prisma/db";
 import { getServerSession } from "next-auth";
+import { connection } from "next/server";
+import Image from "next/image";
+import Link from "next/link";
+import { Film } from "lucide-react";
 
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableHead,
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import Link from "next/link";
 import { authOptions } from "@/app/api/auth/[...nextauth]/auth";
-import { Video } from "@prisma/client";
+import { MEDIA_URL } from "@/lib/media";
+import { cn } from "@/lib/utils";
+import { canUpload } from "@/lib/access";
+import { Skeleton } from "@/components/ui/skeleton";
 
+const STATUS_STYLES: Record<string, string> = {
+    READY: "bg-green-500/15 text-green-400",
+    PENDING: "bg-amber-500/15 text-amber-400",
+    PROCESSING: "bg-amber-500/15 text-amber-400",
+    FAILED: "bg-red-500/15 text-red-400",
+};
 
-type VideoData = {
-    id: string;
-    status: "UNUPLOADED" | "READY" | "PROCESSING" | "FAILED";
-    title: string;
-    description: string | null;
-    url: string | null;
-    thumbnail: string | null;
-    publishedAt: Date | null;
-    createdAt: Date;
-    updatedAt: Date;
-    deletedAt: Date | null;
-    userId: string;
-}
-
-export default async function MyVideos() {
-
-    const data = await getVideos();
-
-
-    // sort data by status such that the videos that are ready are at the top
-
+/** Shell (heading + table header) renders immediately; rows stream in once the session and query resolve. */
+export default function MyVideos() {
     return (
-        // <div className="w-full flex flex-col items-center gap-5 p-5 pb-10 h-full overflow-y-scroll custom-scrollbar">
-        <div className="ml-56 w-full">
+        <div className="px-4 py-6 sm:px-6">
+            <h1 className="mb-6 text-2xl font-semibold">Your videos</h1>
             <Table>
-                <TableCaption>A list of your vidoes.</TableCaption>
                 <TableHeader>
                     <TableRow>
-                        <TableHead className="">Title</TableHead>
-                        <TableHead className="w-[40%]">Description</TableHead>
-                        <TableHead className="text-center">Status</TableHead>
-                        <TableHead className="text-center">Video URL</TableHead>
-                        <TableHead className="text-right">CreatedAt</TableHead>
-                        {/* <TableHead className="text-right">PublishedAt</TableHead> */}
+                        <TableHead>Video</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead className="text-right">Date</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {data.map((video) => (
-                        <TableRow key={video.id}>
-                            <TableCell className="font-medium">{video.title}</TableCell>
-                            <TableCell>{getDescription(video.description!)}</TableCell>
-                            <TableCell className="text-center">{video.status}</TableCell>
-                            <TableHead className="text-center">
-                                {video.status === "READY" ? (
-                                    <Link href={`/watch/${video.id}`}>{`/watch/${video.id}`}</Link>
-                                ) : null}
-                            </TableHead>
-                            <TableCell className="text-right">{video.createdAt.toString()}</TableCell>
-                        </TableRow>
-                    ))}
+                    <Suspense fallback={<RowsSkeleton />}>
+                        <VideoRows />
+                    </Suspense>
                 </TableBody>
             </Table>
         </div>
     )
 }
 
+function RowsSkeleton() {
+    return (
+        <>
+            {Array.from({ length: 4 }).map((_, i) => (
+                <TableRow key={i}>
+                    <TableCell>
+                        <div className="flex items-start gap-4">
+                            <Skeleton className="aspect-video w-32 shrink-0 rounded-md" />
+                            <div className="flex w-full flex-col gap-2">
+                                <Skeleton className="h-4 w-1/2" />
+                                <Skeleton className="h-3 w-3/4" />
+                            </div>
+                        </div>
+                    </TableCell>
+                    <TableCell><Skeleton className="h-6 w-16 rounded-full" /></TableCell>
+                    <TableCell><Skeleton className="ml-auto h-4 w-24" /></TableCell>
+                </TableRow>
+            ))}
+        </>
+    )
+}
 
-function getDescription(description: string) {
-    const descriptionWithHashtags = description?.split('\n').map((line, lineIdx) => {
-        if (line.trim() === '') {
-            return <br key={lineIdx} />;
-        } else {
-            return (
-                <p key={lineIdx}>
-                    {line.split(' ').map((word, wordIdx) => {
-                        if (word.startsWith('#')) {
-                            return <span key={wordIdx} className='text-blue-500'>{word}</span>;
-                        } else {
-                            return word;
-                        }
-                    }).reduce((prev, curr, i) => {
-                        return <>{prev} {(i !== 0) && ' '}{curr}</>;
-                    }, <></>)}
-                </p>
-            );
-        }
-    });
-    return descriptionWithHashtags;
+async function VideoRows() {
+    const data = await getVideos();
+
+    if (data.length === 0) {
+        return (
+            <TableRow>
+                <TableCell colSpan={3} className="py-20 text-center text-muted-foreground">
+                    You haven&apos;t uploaded any videos yet.
+                </TableCell>
+            </TableRow>
+        );
+    }
+
+    return (
+        <>
+            {data.map((video) => {
+                const ready = video.status === "READY";
+                return (
+                    <TableRow key={video.id}>
+                        <TableCell>
+                            <div className="flex items-start gap-4">
+                                <div className="relative flex aspect-video w-32 shrink-0 items-center justify-center overflow-hidden rounded-md bg-muted">
+                                    {ready ? (
+                                        <Image
+                                            src={MEDIA_URL + `${video.id}/thumb_1080p.jpg`}
+                                            alt={video.title}
+                                            fill
+                                            sizes="128px"
+                                            className="object-cover"
+                                        />
+                                    ) : (
+                                        <Film className="h-6 w-6 text-muted-foreground" />
+                                    )}
+                                </div>
+                                <div className="min-w-0">
+                                    {ready ? (
+                                        <Link href={`/watch/${video.id}`} className="line-clamp-1 font-medium hover:underline">
+                                            {video.title}
+                                        </Link>
+                                    ) : (
+                                        <p className="line-clamp-1 font-medium">{video.title}</p>
+                                    )}
+                                    <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
+                                        {video.description || "No description"}
+                                    </p>
+                                </div>
+                            </div>
+                        </TableCell>
+                        <TableCell>
+                            <span className={cn("rounded-full px-2.5 py-1 text-xs font-medium", STATUS_STYLES[video.status] ?? "bg-muted")}>
+                                {video.status.charAt(0) + video.status.slice(1).toLowerCase()}
+                            </span>
+                        </TableCell>
+                        <TableCell className="whitespace-nowrap text-right text-sm">
+                            {video.createdAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                            <p className="text-xs text-muted-foreground">Uploaded</p>
+                        </TableCell>
+                    </TableRow>
+                );
+            })}
+        </>
+    )
 }
 
 
 async function getVideos() {
+    // per-request: next-auth v4 generates a random CSRF token, which can't be prerendered
+    await connection();
     const session = await getServerSession(authOptions);
 
-    if (!session || session.user.email !== "pink53906@gmail.com") {
+    if (!session || !canUpload(session.user.email)) {
         return [];
     }
     const data = await prisma.video.findMany({
@@ -115,7 +155,6 @@ async function getVideos() {
         },
         orderBy: [
             { createdAt: 'desc' },
-            // { status: 'desc' },
         ]
     })
     return data;

@@ -4,10 +4,15 @@ const mediaHost = process.env.NEXT_PUBLIC_MEDIA_BASE_URL
   : null;
 
 const nextConfig = {
+  // Partial prerendering: static shells are prerendered, data inside <Suspense> streams per request.
+  cacheComponents: true,
+  partialPrefetching: true,
   images: {
     dangerouslyAllowSVG: true,
     // cloudfront = legacy AWS media host, mediaHost = Cloudflare R2 public bucket
-    domains: ["placehold.co", "d3tc1biq9ly8l.cloudfront.net", mediaHost].filter(Boolean),
+    remotePatterns: ["placehold.co", "d3tc1biq9ly8l.cloudfront.net", mediaHost]
+      .filter(Boolean)
+      .map((hostname) => ({ protocol: "https", hostname })),
   },
 };
 

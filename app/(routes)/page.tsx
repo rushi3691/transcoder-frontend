@@ -2,15 +2,12 @@ import { Suspense } from "react";
 import ListSuspense from "./suspense";
 import ListVideos from "./listVideos";
 
-export const dynamic = "force-dynamic";
-
 export default async function Home() {
   return (
-    // handle overflow in y axis
-    <div className="ml-60 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10 m-10 w-full h-full">
-      <Suspense fallback={<ListSuspense/>}>
+    <div className="grid grid-cols-1 gap-x-4 gap-y-10 px-4 py-6 sm:grid-cols-2 sm:px-6 lg:grid-cols-3 2xl:grid-cols-4">
+      <Suspense fallback={<ListSuspense />}>
         <ListVideos />
       </Suspense>
-    </div >
+    </div>
   );
 }

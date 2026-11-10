@@ -1,15 +1,25 @@
-import { Video } from "@prisma/client";
+import Avatar from "@/components/custom-components/avatar";
+import { VideoWithUser } from "@/components/custom-components/video-card";
+import { timeAgo } from "@/lib/utils";
 
 
 
-export default function VideoInfo({ video }: { video: Video }) {
-    
+export default function VideoInfo({ video }: { video: VideoWithUser }) {
+
     const descriptionWithHashtags = getDescription(video.description!);
 
     return (
-        <div className='flex flex-col items-start justify-start w-full gap-4 my-3'>
-            <div className='text-2xl font-bold'>{video.title}</div>
-            <div className='w-full bg-muted p-4 rounded-xl text-sm'>
+        <div className='flex w-full flex-col gap-3'>
+            <h1 className='text-xl font-semibold leading-7'>{video.title}</h1>
+            <div className='flex items-center gap-3'>
+                <Avatar name={video.user.name} image={video.user.image} size={40} />
+                <span className='font-medium'>{video.user.name}</span>
+            </div>
+            <div className='w-full rounded-xl bg-muted p-3 text-sm'>
+                <p className='mb-1 font-medium'>
+                    {video.createdAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    <span className='ml-2 text-muted-foreground'>{timeAgo(video.createdAt)}</span>
+                </p>
                 {descriptionWithHashtags}
             </div>
         </div>
@@ -26,7 +36,7 @@ function getDescription(description: string) {
                 <p key={lineIdx}>
                     {line.split(' ').map((word, wordIdx) => {
                         if (word.startsWith('#')) {
-                            return <span key={wordIdx} className='text-blue-500'>{word}</span>;
+                            return <span key={wordIdx} className='text-sky-400'>{word}</span>;
                         } else {
                             return word;
                         }

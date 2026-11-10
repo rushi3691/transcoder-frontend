@@ -4,9 +4,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params;
+  const { id } = await params;
   console.log("lvid: ", id);
 
   const { vid } = VideoInfoRequestSchema.parse({vid: id});
