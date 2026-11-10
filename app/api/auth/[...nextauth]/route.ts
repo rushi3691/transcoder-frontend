@@ -2,7 +2,6 @@ import NextAuth, { AuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { prisma } from "@/prisma/db";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import jwt from "jsonwebtoken";
 import { JWT } from "next-auth/jwt";
 import { authOptions } from "./auth";
 

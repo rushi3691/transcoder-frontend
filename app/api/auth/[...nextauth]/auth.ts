@@ -1,7 +1,7 @@
 import GoogleProvider from "next-auth/providers/google";
 import { prisma } from "@/prisma/db";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import jwt from "jsonwebtoken";
+import { SignJWT, jwtVerify } from "jose";
 import { JWT } from "next-auth/jwt";
 import { AuthOptions } from "next-auth";
 
@@ -36,25 +36,27 @@ export const authOptions: AuthOptions = {
     maxAge: 24 * 60 * 60, // 24 hours
   },
 
+  // Plain HS256 JWTs (same format jsonwebtoken produced, which the legacy CloudFront cookie check expects).
+  // jose instead of jsonwebtoken: its dependency chain reads Buffer.SlowBuffer, removed in Node 25.
   jwt: {
-    encode: async ({ secret, token, maxAge }) => {
-      const encodedToken = jwt.sign(token as Object, secret, {
-        expiresIn: maxAge,
-      });
-
-      return encodedToken;
+    encode: async ({ secret, token, maxAge = 24 * 60 * 60 }) => {
+      const now = Math.floor(Date.now() / 1000);
+      return new SignJWT({ ...token })
+        .setProtectedHeader({ alg: "HS256" })
+        .setIssuedAt(now)
+        .setExpirationTime(now + maxAge)
+        .sign(new TextEncoder().encode(secret as string));
     },
     decode: async ({ secret, token }) => {
-      if (token === undefined) {
-        return null;
+      if (!token) return null;
+      try {
+        const { payload } = await jwtVerify(token, new TextEncoder().encode(secret as string), {
+          algorithms: ["HS256"],
+        });
+        return payload as JWT;
+      } catch {
+        return null; // expired, tampered or signed with another secret -> no session
       }
-      const verify = jwt.verify(token, secret) as JWT | string;
-
-      if (typeof verify === "string") {
-        return null;
-      }
-
-      return verify;
     },
   },
   secret: process.env.NEXTAUTH_SECRET!,
