@@ -1,7 +1,8 @@
 "use client"
 
-import '@videojs/react/video/skin.css';
-import { VideoPlayer, VideoSkin } from '@videojs/react/video';
+import { VideoPlayer } from '@videojs/react/video';
+// skin source installed via the Video.js shadcn registry; controls restyled in components/videojs/video/layout/controls.tsx
+import { VideoSkin } from '@/components/videojs/video/skin';
 import { HlsJsVideo } from '@videojs/react/media/hlsjs-video';
 import { GoogleCast } from '@videojs/react/extensions/google-cast';
 

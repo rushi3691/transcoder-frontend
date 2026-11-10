@@ -10,7 +10,7 @@ export default function VideoInfo({ video }: { video: VideoWithUser }) {
 
     return (
         <div className='flex w-full flex-col gap-3'>
-            <h1 className='text-xl font-semibold leading-7'>{video.title}</h1>
+            <h1 className='text-xl font-bold leading-7'>{video.title}</h1>
             <div className='flex items-center gap-3'>
                 <Avatar name={video.user.name} image={video.user.image} size={40} />
                 <span className='font-medium'>{video.user.name}</span>
