@@ -3,8 +3,6 @@
 import { useState } from 'react'
 import { Roboto } from 'next/font/google'
 import '../globals.css'
-import '@vidstack/react/player/styles/default/theme.css';
-import '@vidstack/react/player/styles/default/layouts/video.css';
 import { cn } from '@/lib/utils'
 import { SessionProvider } from "next-auth/react"
 import Topbar from '@/components/custom-components/topbar';

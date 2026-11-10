@@ -9,7 +9,7 @@ import VideoInfo from "./VideoInfo";
 export default function WatchPage({ params }: { params: Promise<{ id: string }> }) {
     return (
         // width capped so the 16:9 player leaves room for the title on short screens
-        <div className='mx-auto flex max-w-[min(1280px,calc((100vh_-_220px)*16/9+48px))] flex-col gap-3 px-4 py-6 sm:px-6'>
+        <div className='mx-auto flex max-w-[min(1280px,calc((100vh-220px)*16/9+48px))] flex-col gap-3 px-4 py-6 sm:px-6'>
             <Suspense fallback={<WatchSkeleton />}>
                 <Watch params={params} />
             </Suspense>
