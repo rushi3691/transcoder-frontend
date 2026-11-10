@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 
-const cloudfrontUrl = 'https://d3tc1biq9ly8l.cloudfront.net/processed/';
+import { MEDIA_URL } from '@/lib/media';
 
 
 export default async function ListVideos() {
@@ -17,7 +17,7 @@ export default async function ListVideos() {
                     <Link href={`/watch/${video.id}`}>
                         <div className='h-full w-full'>
                             <Image
-                                src={cloudfrontUrl + `${video.id}/thumb_1080p.jpg`}
+                                src={MEDIA_URL + `${video.id}/thumb_1080p.jpg`}
                                 width={360} height={200}
                                 alt={video.title || 'Loading...'}
                                 className="rounded-2xl w-full"

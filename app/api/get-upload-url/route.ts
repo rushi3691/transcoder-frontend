@@ -1,5 +1,5 @@
-import { s3client } from "@/s3";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { r2client, R2_BUCKET } from "@/r2";
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 import { getServerSession } from "next-auth";
@@ -59,7 +59,9 @@ export async function POST(request: NextRequest) {
   console.log("Next req: url_for: ", title, " with id: ", newVideoId);
   const url = await getSignedFileUrl({
     fileName: newVideoId,
-    bucket: "rushi-video-streaming-service",
+    // legacy AWS: client: s3client (from "@/s3"), bucket: "rushi-video-streaming-service"
+    client: r2client,
+    bucket: R2_BUCKET,
   });
 
   console.log("Next req: url: ", url);
@@ -69,10 +71,11 @@ export async function POST(request: NextRequest) {
 
 type GetSignedFileUrlArgs = {
   fileName: string;
+  client: S3Client;
   bucket: string;
 };
 
-const getSignedFileUrl = async ({ fileName, bucket }: GetSignedFileUrlArgs) => {
+const getSignedFileUrl = async ({ fileName, client, bucket }: GetSignedFileUrlArgs) => {
   // prefix
   const prefix = "raw/";
 
@@ -89,7 +92,7 @@ const getSignedFileUrl = async ({ fileName, bucket }: GetSignedFileUrlArgs) => {
     // ContentType: "video/*",
   });
 
-  const url = await getSignedUrl(s3client, command, {
+  const url = await getSignedUrl(client, command, {
     expiresIn: 3600, // 1 hour
   });
 

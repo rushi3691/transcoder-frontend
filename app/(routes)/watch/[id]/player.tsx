@@ -23,11 +23,11 @@ import { Video } from '@prisma/client';
 
 
 
-const cloudfrontUrl = 'https://d3tc1biq9ly8l.cloudfront.net/processed/';
+import { MEDIA_URL } from '@/lib/media';
 
 export default function Player({ video }: { video: Video }) {
     const player = useRef<MediaPlayerInstance>(null);
-    const url = cloudfrontUrl + `${video.id}/master.m3u8`
+    const url = MEDIA_URL + `${video.id}/master.m3u8`
     const [src, setSrc] = useState(url);
 
     function onProviderChange(
@@ -82,7 +82,7 @@ export default function Player({ video }: { video: Video }) {
                 <MediaProvider>
                     <Poster
                         className="vds-poster"
-                        src={cloudfrontUrl + `${video.id}/thumb_4k.jpg`}
+                        src={MEDIA_URL + `${video.id}/thumb_4k.jpg`}
                         alt={video.title || 'Loading...'}
                     />
                     {/* // ! don't delete */}

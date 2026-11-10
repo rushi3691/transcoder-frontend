@@ -6,6 +6,7 @@ import { prisma } from "@/prisma/db";
 import { z } from "zod";
 import { PrismaClientUnknownRequestError } from "@prisma/client/runtime/library";
 import { authOptions } from "../auth/[...nextauth]/auth";
+import { enqueueTranscode } from "@/lib/queue";
 
 export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -29,6 +30,12 @@ export async function POST(request: NextRequest) {
         status: status,
       },
     });
+
+    // upload finished -> hand off to the transcoder
+    // (legacy AWS: S3 event notification -> SQS did this, no app code)
+    if (status === "PENDING") {
+      await enqueueTranscode(vid);
+    }
 
 
     return NextResponse.json({ status: 200, body: updatedVideo });
