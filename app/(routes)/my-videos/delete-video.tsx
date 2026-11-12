@@ -34,7 +34,7 @@ export default function DeleteVideo({
 
             <dialog
                 ref={dialog}
-                className="w-[min(28rem,calc(100vw-2rem))] rounded-2xl bg-card p-0 text-foreground shadow-2xl ring-1 ring-border backdrop:bg-black/60"
+                className="m-auto w-[min(28rem,calc(100vw-2rem))] rounded-2xl bg-card p-0 text-foreground shadow-2xl ring-1 ring-border backdrop:bg-black/60"
             >
                 <form action={formAction} className="flex flex-col gap-4 p-6">
                     <h2 className="text-lg font-semibold">Delete video?</h2>

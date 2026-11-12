@@ -36,7 +36,7 @@ export default function EditVideo({
 
             <dialog
                 ref={dialog}
-                className="w-[min(32rem,calc(100vw-2rem))] rounded-2xl bg-card p-0 text-foreground shadow-2xl ring-1 ring-border backdrop:bg-black/60"
+                className="m-auto w-[min(32rem,calc(100vw-2rem))] rounded-2xl bg-card p-0 text-foreground shadow-2xl ring-1 ring-border backdrop:bg-black/60"
             >
                 {/* key resets the fields to the saved values each time the dialog reopens after a save */}
                 <form action={formAction} className="flex flex-col gap-5 p-6" key={`${video.title}\n${video.description}`}>
