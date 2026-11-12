@@ -20,6 +20,7 @@ import { cn, formatDuration } from "@/lib/utils";
 import { canUpload } from "@/lib/access";
 import { Skeleton } from "@/components/ui/skeleton";
 import EditVideo from "./edit-video";
+import DeleteVideo from "./delete-video";
 
 const STATUS_STYLES: Record<string, string> = {
     READY: "bg-green-500/15 text-green-400",
@@ -39,7 +40,7 @@ export default function MyVideos() {
                         <TableHead>Video</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead className="text-right">Date</TableHead>
-                        <TableHead className="w-12"><span className="sr-only">Actions</span></TableHead>
+                        <TableHead className="w-24"><span className="sr-only">Actions</span></TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -68,7 +69,7 @@ function RowsSkeleton() {
                     </TableCell>
                     <TableCell><Skeleton className="h-6 w-16 rounded-full" /></TableCell>
                     <TableCell><Skeleton className="ml-auto h-4 w-24" /></TableCell>
-                    <TableCell><Skeleton className="h-9 w-9 rounded-full" /></TableCell>
+                    <TableCell><div className="flex gap-1"><Skeleton className="h-9 w-9 rounded-full" /><Skeleton className="h-9 w-9 rounded-full" /></div></TableCell>
                 </TableRow>
             ))}
         </>
@@ -138,7 +139,10 @@ async function VideoRows() {
                             <p className="text-xs text-muted-foreground">Uploaded</p>
                         </TableCell>
                         <TableCell>
-                            <EditVideo video={{ id: video.id, title: video.title, description: video.description }} />
+                            <div className="flex items-center gap-1">
+                                <EditVideo video={{ id: video.id, title: video.title, description: video.description }} />
+                                <DeleteVideo video={{ id: video.id, title: video.title, status: video.status }} />
+                            </div>
                         </TableCell>
                     </TableRow>
                 );
